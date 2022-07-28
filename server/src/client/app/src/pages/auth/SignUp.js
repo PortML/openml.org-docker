@@ -57,7 +57,7 @@ function SignUp() {
           email: event.target.email.value,
           password: event.target.password.value
         })
-        .then(function(response) {
+        .then(function (response) {
           if (response.data.msg === "User created") {
             console.log(response.data);
             setRegister(true);
@@ -65,7 +65,7 @@ function SignUp() {
             setDuplicateUser(true);
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log(error.data);
         });
     }
@@ -120,7 +120,7 @@ function SignUp() {
           mt={2}
           style={{ marginTop: 20 }}
         >
-          Sign up for OpenML
+          Sign up for PortML
         </Button>
         {register ? (
           <Redirect to="/auth/sign-in" />

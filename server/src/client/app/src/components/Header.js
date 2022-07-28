@@ -257,46 +257,46 @@ class UserMenu extends Component {
                 </StyledLink>
               </React.Fragment>
             ) : (
-                <React.Fragment>
-                  <IconButton
-                    aria-owns={newOpen ? "menu-new" : undefined}
-                    aria-haspopup="true"
-                    onClick={this.toggleNewMenu}
-                    color="inherit"
-                    size="large">
-                    <WhiteIcon
-                      bg={this.props.bg}
-                      icon="plus"
-                      style={{
-                        height: 20,
-                        width: 20
-                      }}
-                    />
-                  </IconButton>
-                  <IconButton
-                    aria-owns={open ? "menu-appbar" : undefined}
-                    aria-haspopup="true"
-                    onClick={this.toggleMenu}
-                    color="inherit"
-                    size="large">
-                    <SlimCardHeader
-                      avatar={
-                        <Avatar
-                          src={context.userImage}
-                          style={{
-                            height: 40,
-                            width: 40,
-                            marginRight: -16,
-                            backgroundColor: avatarColor
-                          }}
-                        >
-                          {context.userInitials}
-                        </Avatar>
-                      }
-                    />
-                  </IconButton>
-                </React.Fragment>
-              )}
+              <React.Fragment>
+                <IconButton
+                  aria-owns={newOpen ? "menu-new" : undefined}
+                  aria-haspopup="true"
+                  onClick={this.toggleNewMenu}
+                  color="inherit"
+                  size="large">
+                  <WhiteIcon
+                    bg={this.props.bg}
+                    icon="plus"
+                    style={{
+                      height: 20,
+                      width: 20
+                    }}
+                  />
+                </IconButton>
+                <IconButton
+                  aria-owns={open ? "menu-appbar" : undefined}
+                  aria-haspopup="true"
+                  onClick={this.toggleMenu}
+                  color="inherit"
+                  size="large">
+                  <SlimCardHeader
+                    avatar={
+                      <Avatar
+                        src={context.userImage}
+                        style={{
+                          height: 40,
+                          width: 40,
+                          marginRight: -16,
+                          backgroundColor: avatarColor
+                        }}
+                      >
+                        {context.userInitials}
+                      </Avatar>
+                    }
+                  />
+                </IconButton>
+              </React.Fragment>
+            )}
             <StyledMenu
               id="menu-new"
               anchorEl={anchorNewMenu}
@@ -452,7 +452,7 @@ const Header = ({ onDrawerToggle, bg, routes, loggedIn }) => (
                         width: 90
                       }}
                     >
-                      OpenML
+                      PortML
                     </UserButton>
                   </StyledLink>
                 </Grid>
@@ -500,8 +500,8 @@ const Header = ({ onDrawerToggle, bg, routes, loggedIn }) => (
                     {context.searchActive ? (
                       <FontAwesomeIcon icon="times" />
                     ) : (
-                        "Search"
-                      )}
+                      "Search"
+                    )}
                   </SearchButton>
                 </Box>
               </Grid>

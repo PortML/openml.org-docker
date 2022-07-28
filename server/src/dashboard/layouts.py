@@ -342,7 +342,10 @@ def get_layout_from_flow(flow_id):
     )
     # parameters dropdown
     setup_list = setups.list_setups(flow=flow_id, size=1, output_format="dataframe")
+    print(setup_list)
     parameter_dict = setup_list["parameters"].values[0]
+    print(parameter_dict)
+    
     parameters = [param["full_name"] for key, param in parameter_dict.items()]
     parameters.append("None")
     dropdown_parameter = html.Div(
