@@ -1,16 +1,16 @@
+import { Grid, Tab, Tabs } from "@mui/material";
 import React from "react";
-import { SearchResultsPanel } from "./SearchResultsPanel.js";
-import { EntryDetails } from "./ItemDetail.js";
-import { FilterBar } from "./FilterBar.js";
-import { Grid, Tabs, Tab } from "@mui/material";
 import styled from "styled-components";
+import { FilterBar } from "./FilterBar.js";
+import { EntryDetails } from "./ItemDetail.js";
+import { SearchResultsPanel } from "./SearchResultsPanel.js";
 //import Scrollbar from "react-scrollbars-custom";
-import PerfectScrollbar from "react-perfect-scrollbar";
+import { blue, green, purple, red, yellow } from "@mui/material/colors";
 import queryString from "query-string";
-import { DetailTable } from "./Tables.js";
-import { search, getProperty } from "./api";
+import PerfectScrollbar from "react-perfect-scrollbar";
 import { MainContext } from "../../App.js";
-import { blue, red, green, yellow, purple } from "@mui/material/colors";
+import { getProperty, search } from "./api";
+import { DetailTable } from "./Tables.js";
 
 const Scrollbar = styled(PerfectScrollbar)`
   overflow-x: hidden;
@@ -72,22 +72,22 @@ export default class SearchPanel extends React.Component {
   getQueryParams = () => {
     let qstring = queryString.parse(this.props.location.search);
 
-      // Sensible defaults
-      if (qstring.type === "data" && qstring.status === undefined) {
-        qstring.status = "active";
-        this.updateQuery("status", "active");
-      } else if (qstring.type === "measure" && qstring.measure_type === undefined) {
-        qstring.measure_type = "data_quality";
-        this.updateQuery("measure_type", "data_quality");
-      } else if ((qstring.type === "study" || qstring.type === "benchmark") && qstring.study_type === undefined) {
-        qstring.study_type = "task";
-        this.updateQuery("study_type", "task");
-      } else if ((qstring.type === "study" || qstring.type === "benchmark") && 
-          this.context.filters.study_type !== undefined && qstring.study_type !== this.context.filters.study_type.value) {
-        //study type changed, reset active tab
-        this.context.activeTab = 0
-      }
-    
+    // Sensible defaults
+    if (qstring.type === "data" && qstring.status === undefined) {
+      qstring.status = "active";
+      this.updateQuery("status", "active");
+    } else if (qstring.type === "measure" && qstring.measure_type === undefined) {
+      qstring.measure_type = "data_quality";
+      this.updateQuery("measure_type", "data_quality");
+    } else if ((qstring.type === "study" || qstring.type === "benchmark") && qstring.study_type === undefined) {
+      qstring.study_type = "task";
+      this.updateQuery("study_type", "task");
+    } else if ((qstring.type === "study" || qstring.type === "benchmark") &&
+      this.context.filters.study_type !== undefined && qstring.study_type !== this.context.filters.study_type.value) {
+      //study type changed, reset active tab
+      this.context.activeTab = 0
+    }
+
     // If no sort is defined, set a sensible default
     if (this.context.sort === null || this.context.sort === undefined || this.context.type !== qstring.type) {
       if (["data", "flow", "task"].includes(qstring.type)) {
@@ -163,7 +163,7 @@ export default class SearchPanel extends React.Component {
 
   updateWindowDimensions = () => {
     if (this.context.displaySplit && window.innerWidth < 600) {
-        this.context.toggleSplit();
+      this.context.toggleSplit();
     }
   };
 
@@ -305,12 +305,12 @@ export default class SearchPanel extends React.Component {
   }
 
   // check if update requires a query reload
-  componentDidUpdate() {      
+  componentDidUpdate() {
     if (this.context.updateType === "query") {
       this.reload(); // Does initial load or when query changes
     } else if (this.context.updateType === "subquery") {
       this.loadSubQuery();
-    } else if (this.context.updateType === "id" && this.context.activeTab>1) {
+    } else if (this.context.updateType === "id" && this.context.activeTab > 1) {
       this.loadSubQuery();
     } else {
       this.updateSearch();
@@ -350,9 +350,9 @@ export default class SearchPanel extends React.Component {
           });
         }
         else if (key.startsWith("collections")) {
-            queryFilters.push({
-              nested: { path: "collections", query: { "term": { "collections.id": filters[key].value } } }
-            });
+          queryFilters.push({
+            nested: { path: "collections", query: { "term": { "collections.id": filters[key].value } } }
+          });
         }
         else if (filters[key].value !== "any") {
           queryFilters.push({
@@ -364,11 +364,11 @@ export default class SearchPanel extends React.Component {
         if (this.context.type === "benchmark" && key === "study_type") {
           if (filters[key].value === "task") {
             queryFilters.push({
-              bool: { should: [ {"wildcard": { "name": "*benchmark*" }}, {"wildcard": { "name": "*suite*" }}] }
+              bool: { should: [{ "wildcard": { "name": "*benchmark*" } }, { "wildcard": { "name": "*suite*" } }] }
             });
           } else if (filters[key].value === "run") {
             queryFilters.push({
-              bool: { should: [ {"wildcard": { "name": "*study*" }}, {"wildcard": { "name": "*benchmark*" }}, ] }
+              bool: { should: [{ "wildcard": { "name": "*study*" } }, { "wildcard": { "name": "*benchmark*" } },] }
             });
           }
         }
@@ -393,10 +393,10 @@ export default class SearchPanel extends React.Component {
         queryFilters.push({
           prefix: { [key]: filters[key].value }
         });
-      } 
+      }
       if (this.context.type === "measure" && key === "measure_type") {
         queryFilters.push({
-          term: { [key]: filters[key].type + "_" + filters[key].value}
+          term: { [key]: filters[key].type + "_" + filters[key].value }
         });
       }
     }
@@ -408,21 +408,21 @@ export default class SearchPanel extends React.Component {
     // Add in non-standard properties
     if (type === "task") {
       data.results.forEach(res => {
-        res["comp_name"] = getProperty(res, "source_data.name") + " " + getProperty(res, "tasktype.name").replace("Supervised ","").toLowerCase(); 
+        res["comp_name"] = getProperty(res, "source_data.name") + " " + getProperty(res, "tasktype.name").replace("Supervised ", "").toLowerCase();
         if (getProperty(res, "tasktype.name").includes("Supervised")) {
           res["description"] = "Predict feature '" + getProperty(res, "target_feature") + "'. "
-          if(getProperty(res, "target_values") && getProperty(res, "target_values").length<=10){
+          if (getProperty(res, "target_values") && getProperty(res, "target_values").length <= 10) {
             res["description"] += "Possible values are '" + getProperty(res, "target_values") + "'. "
           }
         } else if (getProperty(res, "tasktype.name").includes("curve")) {
           res["description"] = "Perform '" + getProperty(res, "tasktype.name") + " analysis. "
         } else {
           res["description"] = "Perform " + getProperty(res, "tasktype.name") + ". "
-          if(getProperty(res, "target_value")){
+          if (getProperty(res, "target_value")) {
             res["description"] += "The target value is '" + getProperty(res, "target_value") + "'. "
           }
         }
-        if (getProperty(res, "estimation_procedure.name")){
+        if (getProperty(res, "estimation_procedure.name")) {
           res["description"] += "Evaluate models using " + getProperty(res, "estimation_procedure.name") + ". ";
         }
         res["description"] += "The evaluation measure is " + getProperty(res, "evaluation_measures") + ". ";
@@ -479,14 +479,14 @@ export default class SearchPanel extends React.Component {
 
   // ID field
   id_field = (qtype) => {
-    if (qtype === "task_type"){
+    if (qtype === "task_type") {
       return "tt_id"
     } else if (qtype === "measure") {
       if (this.context.filters.includes("measure_type")) {
         let mtype = this.props.context.filters["measure_type"].value;
-        if (mtype === "procedure"){
+        if (mtype === "procedure") {
           return "proc_id";
-        } else if (mtype === "measure"){
+        } else if (mtype === "measure") {
           return "eval_id";
         } else {
           return mtype + "_id"
@@ -504,9 +504,10 @@ export default class SearchPanel extends React.Component {
   reload() {
     // distinguishing benchmarks and studies in frontend
     let querytype = this.context.type;
-    if (this.context.type === "benchmark"){
+    if (this.context.type === "benchmark") {
       querytype = "study";
     }
+    if (this.context.loggedIn !== true) return
     // process query
     search(
       this.context.query,
@@ -519,14 +520,14 @@ export default class SearchPanel extends React.Component {
       this.context.startCount
     )
       .then(data => {
-          let res = this.processSearchResults(data, querytype);
-          let obj_id = this.id_field(querytype);
-          if (this.context.startCount === 0){
-            this.context.setResults(res.counts, res.results);
-          } else if (this.context.results[0][obj_id] !== res.results[0][obj_id]) { //add to infinite list
-            this.context.setResults(res.counts, this.context.results.concat(res.results));
-          }
+        let res = this.processSearchResults(data, querytype);
+        let obj_id = this.id_field(querytype);
+        if (this.context.startCount === 0) {
+          this.context.setResults(res.counts, res.results);
+        } else if (this.context.results[0][obj_id] !== res.results[0][obj_id]) { //add to infinite list
+          this.context.setResults(res.counts, this.context.results.concat(res.results));
         }
+      }
       )
       .catch(error => {
         console.error(error);
@@ -544,47 +545,49 @@ export default class SearchPanel extends React.Component {
           console.error(ex);
         }
       });
-}
+  }
 
-// call search engine for sub-listing (e.g. tasks for a given dataset)
-loadSubQuery() {
-  console.log("sq")
-  search(
-    undefined, // query
-    undefined, // tag
-    this.context.subType,
-    this.fields[this.context.subType],
-    (this.context.subType === "task" ? "runs" : "date"),
-    (this.context.subType === "task" ? "desc" : "asc"),
-    this.toFilterQuery(this.drillDownFilter()),
-    this.context.startSubCount
-  )
-    .then(data => {
+  // call search engine for sub-listing (e.g. tasks for a given dataset)
+  loadSubQuery() {
+    console.log("sq")
+    if (this.context.loggedIn !== true) return
+
+    search(
+      undefined, // query
+      undefined, // tag
+      this.context.subType,
+      this.fields[this.context.subType],
+      (this.context.subType === "task" ? "runs" : "date"),
+      (this.context.subType === "task" ? "desc" : "asc"),
+      this.toFilterQuery(this.drillDownFilter()),
+      this.context.startSubCount
+    )
+      .then(data => {
         let res = this.processSearchResults(data, this.context.subType)
-        if (this.context.startSubCount === 0){
+        if (this.context.startSubCount === 0) {
           this.context.setSubResults(res.counts, res.results);
         } else {
           this.context.setSubResults(res.counts, this.context.subResults.concat(res.results));
         }
       }
-    )
-    .catch(error => {
-      console.error(error);
-      try {
-        this.setState({
-          error:
-            "" +
-            error +
-            (error.hasOwnProperty("fileName")
-              ? " (" + error.fileName + ":" + error.lineNumber + ")"
-              : "")
-        });
-        this.context.setSubResults(0, []);
-      } catch (ex) {
-        console.error("There was an error displaying the above error");
-        console.error(ex);
-      }
-    });
+      )
+      .catch(error => {
+        console.error(error);
+        try {
+          this.setState({
+            error:
+              "" +
+              error +
+              (error.hasOwnProperty("fileName")
+                ? " (" + error.fileName + ":" + error.lineNumber + ")"
+                : "")
+          });
+          this.context.setSubResults(0, []);
+        } catch (ex) {
+          console.error("There was an error displaying the above error");
+          console.error(ex);
+        }
+      });
   }
 
   // Translate sort options to URL query parameters
@@ -642,29 +645,29 @@ loadSubQuery() {
       type: this.context.subType,
       sort: (this.context.query !== undefined ? "match" : "runs")
     }
-    if (this.context.type === "data"){
+    if (this.context.type === "data") {
       qstring["source_data.data_id"] = this.context.id;
-    } else if (this.context.type === "task"){
+    } else if (this.context.type === "task") {
       qstring["run_task.task_id"] = this.context.id;
       qstring["sort"] = "date";
-    } else if (this.context.type === "flow"){
+    } else if (this.context.type === "flow") {
       qstring["run_flow.flow_id"] = this.context.id;
       qstring["sort"] = "date";
-    } else if (this.context.type === "study" || this.context.type === "benchmark"){
+    } else if (this.context.type === "study" || this.context.type === "benchmark") {
       qstring["collections.id"] = this.context.id;
-      if (this.context.filters.study_type.value === "run"){
+      if (this.context.filters.study_type.value === "run") {
         qstring["sort"] = "date";
       }
     }
 
     this.context.setSearch(qstring, this.fields[qstring.type]);
-    if (this.context.type === "data"){
+    if (this.context.type === "data") {
       this.goToSubType(this.context.subType, value, "source_data.data_id", this.context.id);
-    } else if (this.context.type === "task"){
+    } else if (this.context.type === "task") {
       this.goToSubType(this.context.subType, value, "run_task.task_id", this.context.id);
-    } else if (this.context.type === "flow"){
+    } else if (this.context.type === "flow") {
       this.goToSubType(this.context.subType, value, "run_flow.flow_id", this.context.id);
-    } else if (this.context.type === "study" || this.context.type === "benchmark"){
+    } else if (this.context.type === "study" || this.context.type === "benchmark") {
       this.goToSubType(this.context.subType, value, "collections.id", this.context.id);
     }
   };
@@ -675,23 +678,23 @@ loadSubQuery() {
 
   // Drilldown filter
   drillDownFilter = () => {
-    if (this.context.type === "data" && this.context.activeTab === 2 && 
-        this.context.updatetype !== "subquery"){
+    if (this.context.type === "data" && this.context.activeTab === 2 &&
+      this.context.updatetype !== "subquery") {
       let filters = []
       filters["source_data.data_id"] = { value: this.context.id, type: "=" };
       return filters;
-    } else if (this.context.type === "task" && this.context.activeTab === 2 && 
-        this.context.updatetype !== "subquery"){
+    } else if (this.context.type === "task" && this.context.activeTab === 2 &&
+      this.context.updatetype !== "subquery") {
       let filters = []
       filters["run_task.task_id"] = { value: this.context.id, type: "=" };
       return filters;
-    } else if (this.context.type === "flow" && this.context.activeTab === 2 && 
-        this.context.updatetype !== "subquery"){
+    } else if (this.context.type === "flow" && this.context.activeTab === 2 &&
+      this.context.updatetype !== "subquery") {
       let filters = []
       filters["run_flow.flow_id"] = { value: this.context.id, type: "=" };
       return filters;
-    } else if ((this.context.type === "study" || this.context.type === "benchmark") && 
-      this.context.updatetype !== "subquery"){
+    } else if ((this.context.type === "study" || this.context.type === "benchmark") &&
+      this.context.updatetype !== "subquery") {
       let filters = []
       filters["collections.id"] = { value: this.context.id, type: "=" };
       return filters;
@@ -704,19 +707,19 @@ loadSubQuery() {
     let type = "task";
     let toggling = false;
     // Reset search when toggling between different sub-searches
-    if ((this.context.type === "study" || this.context.type === "benchmark") && this.context.filters.study_type.value === "run"){
-      if ((activeTab === 3 && this.context.subType === "task") || 
-          (activeTab === 2 && this.context.subType === "run") ){
+    if ((this.context.type === "study" || this.context.type === "benchmark") && this.context.filters.study_type.value === "run") {
+      if ((activeTab === 3 && this.context.subType === "task") ||
+        (activeTab === 2 && this.context.subType === "run")) {
         toggling = true;
       }
-    }    
+    }
     // Only repeat search if current sub-search is empty
-    if (this.context.startSubCount === 0 || toggling){
-      if (this.context.type === "task" || this.context.type === "flow"){
+    if (this.context.startSubCount === 0 || toggling) {
+      if (this.context.type === "task" || this.context.type === "flow") {
         type = "run";
-      } else if (activeTab === 3 && (this.context.type === "study" || this.context.type === "benchmark") && 
-                this.context.filters.study_type.value === "run"){
-        type = "run";    
+      } else if (activeTab === 3 && (this.context.type === "study" || this.context.type === "benchmark") &&
+        this.context.filters.study_type.value === "run") {
+        type = "run";
       }
       this.context.setSubSearch(type, this.drillDownFilter());
     }
@@ -864,7 +867,7 @@ loadSubQuery() {
     switch (this.context.type) {
       case "data":
         return [
-          { name: "Relevance", "value": "match"},
+          { name: "Relevance", "value": "match" },
           { name: "Runs", value: "runs" },
           { name: "Likes", value: "nr_of_likes" },
           { name: "Downloads", value: "nr_of_downloads" },
@@ -892,8 +895,8 @@ loadSubQuery() {
       case "study":
         return [
           { name: "Date", value: "date" },
-          { name: "Datasets", value: "datasets_included" }, 
-          { name: "Tasks", value: "tasks_included" }, 
+          { name: "Datasets", value: "datasets_included" },
+          { name: "Tasks", value: "tasks_included" },
           { name: "Flows", value: "flows_included" }
         ];
       case "benchmark":
@@ -973,198 +976,202 @@ loadSubQuery() {
 
     // distinguishing benchmarks and studies in frontend
     let querytype = this.context.type;
-    if (this.context.type === "benchmark"){
+    if (this.context.type === "benchmark") {
       querytype = "study";
     }
 
     return (
-      <Grid container spacing={0}>
-        <Grid item xs={12}>
-          <FilterBar
-            sortOptions={this.getSortOptions()}
-            filterOptions={this.getFilterOptions()}
-            searchColor={this.context.getColor()}
-            resultSize={this.context.counts}
-            resultType={querytype}
-            sortChange={this.sortChange}
-            filterChange={this.filterChange}
-            clearFilters={this.clearFilters}
-            tagChange={this.tagChange}
-            selectEntity={this.selectEntity.bind(this)}
-          />
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={!this.context.displaySplit ? 12 : 4}
-          xl={!this.context.displaySplit ? 12 : 3}
-          style={{
-            visibility: (this.context.displaySplit || (!this.context.displayStats && (this.context.id === null || this.context.id === undefined))) ? "visible" : "hidden",
-            height: (this.context.displaySplit || (!this.context.displayStats && (this.context.id === null || this.context.id === undefined))) ? "100%" : 0
-          }}
-        >
-          {this.getEntityList()}
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={!this.context.displaySplit ? 12 : 8}
-          xl={!this.context.displaySplit ? 12 : 9}
-          style={{
-            visibility: (this.context.displaySplit || this.context.id || this.context.displayStats) ? "visible" : "hidden",
-            height: (this.context.displaySplit || this.context.id || this.context.displayStats) ? "100%" : 0
-
-          }}
-        >
-          <SearchTabs
-            value={activeTab}
-            onChange={this.tabChange}
-            color="inherit"
-            searchcolor={this.context.getColor()}
-          >
-            <SearchTab
-              label={
-                this.context.id !== undefined
-                  ? ((this.context.type === 'study' || this.context.type === 'benchmark') ? 
-                  ucfirst(this.context.filters.study_type.value) + " Collection" : 
-                  ucfirst(this.context.type).replace("_"," ") + " Detail")
-                  : "Statistics"
-              }
-              key="detail"
-              searchcolor={this.context.getColor()}
-            />
-            <SearchTab
-              label={this.context.id !== undefined ? "Analysis" : "Overview"}
-              key="dash"
-              searchcolor={this.context.getColor()}
-            />
-            {this.context.type === "data" && this.context.id !== undefined && (
-              <SearchTab
-                label="Tasks"
-                key="data_tasks"
-                searchcolor={this.context.getColor()}
+      <>
+        {(process.env.REACT_APP_AUTHNETICATION_REQUIRED !== 'true' || this.context.loggedIn === true) &&
+          <Grid container spacing={0}>
+            <Grid item xs={12}>
+              <FilterBar
+                sortOptions={this.getSortOptions()}
+                filterOptions={this.getFilterOptions()}
+                searchColor={this.context.getColor()}
+                resultSize={this.context.counts}
+                resultType={querytype}
+                sortChange={this.sortChange}
+                filterChange={this.filterChange}
+                clearFilters={this.clearFilters}
+                tagChange={this.tagChange}
+                selectEntity={this.selectEntity.bind(this)}
               />
-            )}
-            {(this.context.type === "task" || this.context.type === "flow") &&
-              this.context.id !== undefined && (
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={!this.context.displaySplit ? 12 : 4}
+              xl={!this.context.displaySplit ? 12 : 3}
+              style={{
+                visibility: (this.context.displaySplit || (!this.context.displayStats && (this.context.id === null || this.context.id === undefined))) ? "visible" : "hidden",
+                height: (this.context.displaySplit || (!this.context.displayStats && (this.context.id === null || this.context.id === undefined))) ? "100%" : 0
+              }}
+            >
+              {this.getEntityList()}
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={!this.context.displaySplit ? 12 : 8}
+              xl={!this.context.displaySplit ? 12 : 9}
+              style={{
+                visibility: (this.context.displaySplit || this.context.id || this.context.displayStats) ? "visible" : "hidden",
+                height: (this.context.displaySplit || this.context.id || this.context.displayStats) ? "100%" : 0
+
+              }}
+            >
+              <SearchTabs
+                value={activeTab}
+                onChange={this.tabChange}
+                color="inherit"
+                searchcolor={this.context.getColor()}
+              >
                 <SearchTab
-                  label="Runs"
-                  key="runs_tasks"
+                  label={
+                    this.context.id !== undefined
+                      ? ((this.context.type === 'study' || this.context.type === 'benchmark') ?
+                        ucfirst(this.context.filters.study_type.value) + " Collection" :
+                        ucfirst(this.context.type).replace("_", " ") + " Detail")
+                      : "Statistics"
+                  }
+                  key="detail"
                   searchcolor={this.context.getColor()}
                 />
-              )}
-            {(this.context.type === "study" || this.context.type === "benchmark") && this.context.id !== undefined && (
-              <SearchTab
-                label="Tasks"
-                key="collection_tasks"
-                searchcolor={this.context.getColor()}
-              />
-            )}
-            {(this.context.type === "study" || this.context.type === "benchmark") && this.context.filters.study_type && this.context.filters.study_type.value === "run" && this.context.id !== undefined && (
-              <SearchTab
-                label="Runs"
-                key="collection_runs"
-                searchcolor={this.context.getColor()}
-              />
-            )}
-          </SearchTabs>
-            {activeTab === 0 ? ( // Detail panel
-              this.context.id ? (
-                <Scrollbar>
-                <DetailPanel>
-                  <EntryDetails
-                    type={querytype}
-                    entity={this.context.id}
-                    filters={this.context.filters}
-                    history={this.props.history}
-                    location={this.props.location}
-                    userID={this.context.userID}
-                    color={this.context.getColor(querytype)}
+                <SearchTab
+                  label={this.context.id !== undefined ? "Analysis" : "Overview"}
+                  key="dash"
+                  searchcolor={this.context.getColor()}
+                />
+                {this.context.type === "data" && this.context.id !== undefined && (
+                  <SearchTab
+                    label="Tasks"
+                    key="data_tasks"
+                    searchcolor={this.context.getColor()}
                   />
-                </DetailPanel>
-                </Scrollbar>
-              ) : (
-                  <Scrollbar>
-                  <DetailTable
-                    entity_type={this.props.entity_type}
-                    table_select={this.tableSelect}
+                )}
+                {(this.context.type === "task" || this.context.type === "flow") &&
+                  this.context.id !== undefined && (
+                    <SearchTab
+                      label="Runs"
+                      key="runs_tasks"
+                      searchcolor={this.context.getColor()}
+                    />
+                  )}
+                {(this.context.type === "study" || this.context.type === "benchmark") && this.context.id !== undefined && (
+                  <SearchTab
+                    label="Tasks"
+                    key="collection_tasks"
+                    searchcolor={this.context.getColor()}
                   />
-                  </Scrollbar>
-                )
-            ) : // Dashboard for detail
-              activeTab === 1 ? (
+                )}
+                {(this.context.type === "study" || this.context.type === "benchmark") && this.context.filters.study_type && this.context.filters.study_type.value === "run" && this.context.id !== undefined && (
+                  <SearchTab
+                    label="Runs"
+                    key="collection_runs"
+                    searchcolor={this.context.getColor()}
+                  />
+                )}
+              </SearchTabs>
+              {activeTab === 0 ? ( // Detail panel
                 this.context.id ? (
                   <Scrollbar>
-                  <div style={{ height: "calc(100vh - 125px)" }}>
-                    <iframe
-                      src={
-                        String(window.location.protocol) +
-                        "//" +
-                        String(window.location.host) +
-                        "/dashboard/" +
-                        String(querytype) +
-                        "/" +
-                        ((this.context.type === "study" || this.context.type === "benchmark") &&
-                          this.context.filters.study_type
-                          ? this.context.filters.study_type.value + "/"
-                          : "") +
-                        (this.context.type === "measure" &&
-                          this.context.filters.measure_type
-                          ? this.context.filters.measure_type.value + "/"
-                          : "") +
-                        String(this.context.id)
-                      }
-                      height="100%"
-                      width="100%"
-                      frameBorder="0"
-                      id="dash_iframe"
-                      title={"dash_iframe_data_" + this.state.searchEntity}
-                      allowFullScreen
-                      sandbox="allow-popups
-                            allow-scripts allow-same-origin allow-top-navigation"
-                    ></iframe>
-                  </div>
+                    <DetailPanel>
+                      <EntryDetails
+                        type={querytype}
+                        entity={this.context.id}
+                        filters={this.context.filters}
+                        history={this.props.history}
+                        location={this.props.location}
+                        userID={this.context.userID}
+                        color={this.context.getColor(querytype)}
+                      />
+                    </DetailPanel>
                   </Scrollbar>
                 ) : (
+                  <Scrollbar>
+                    <DetailTable
+                      entity_type={this.props.entity_type}
+                      table_select={this.tableSelect}
+                    />
+                  </Scrollbar>
+                )
+              ) : // Dashboard for detail
+                activeTab === 1 ? (
+                  this.context.id ? (
+                    <Scrollbar>
+                      <div style={{ height: "calc(100vh - 125px)" }}>
+                        <iframe
+                          src={
+                            String(window.location.protocol) +
+                            "//" +
+                            String(window.location.host) +
+                            "/dashboard/" +
+                            String(querytype) +
+                            "/" +
+                            ((this.context.type === "study" || this.context.type === "benchmark") &&
+                              this.context.filters.study_type
+                              ? this.context.filters.study_type.value + "/"
+                              : "") +
+                            (this.context.type === "measure" &&
+                              this.context.filters.measure_type
+                              ? this.context.filters.measure_type.value + "/"
+                              : "") +
+                            String(this.context.id)
+                          }
+                          height="100%"
+                          width="100%"
+                          frameBorder="0"
+                          id="dash_iframe"
+                          title={"dash_iframe_data_" + this.state.searchEntity}
+                          allowFullScreen
+                          sandbox="allow-popups
+                            allow-scripts allow-same-origin allow-top-navigation"
+                        ></iframe>
+                      </div>
+                    </Scrollbar>
+                  ) : (
                     // Dashboard for list
                     <Scrollbar>
-                    <div style={{ height: "calc(100vh - 125px)" }}>
-                      <iframe
-                        src={
-                          String(window.location.protocol) +
-                          "//" +
-                          String(window.location.host) +
-                          "/dashboard/" +
-                          String(this.context.type)
-                        }
-                        height="100%"
-                        width="100%"
-                        frameBorder="0"
-                        id="dash_iframe_overview"
-                        title={"dash_iframe_over_"}
-                        allowFullScreen
-                        sandbox="allow-popups
+                      <div style={{ height: "calc(100vh - 125px)" }}>
+                        <iframe
+                          src={
+                            String(window.location.protocol) +
+                            "//" +
+                            String(window.location.host) +
+                            "/dashboard/" +
+                            String(this.context.type)
+                          }
+                          height="100%"
+                          width="100%"
+                          frameBorder="0"
+                          id="dash_iframe_overview"
+                          title={"dash_iframe_over_"}
+                          allowFullScreen
+                          sandbox="allow-popups
                             allow-scripts allow-same-origin allow-top-navigation"
-                      ></iframe>
-                    </div>
+                        ></iframe>
+                      </div>
                     </Scrollbar>
                   )
-              ) : ( // Other tabs are drilldowns 
+                ) : ( // Other tabs are drilldowns 
                   this.context.id &&
                   ((this.context.type === "data" && activeTab === 2) ||
-                   ((this.context.type === "study" || this.context.type === "benchmark") && activeTab === 2)
-                   ? (
-                    this.getSubEntityList("task")
-                  ) : (
-                    (this.context.type === "task" && activeTab === 2)
+                    ((this.context.type === "study" || this.context.type === "benchmark") && activeTab === 2)
                     ? (
-                      this.getSubEntityList("run")
+                      this.getSubEntityList("task")
                     ) : (
-                    this.getSubEntityList("run")
-                    ))
-                ))}
-        </Grid>
-      </Grid>
+                      (this.context.type === "task" && activeTab === 2)
+                        ? (
+                          this.getSubEntityList("run")
+                        ) : (
+                          this.getSubEntityList("run")
+                        ))
+                  ))}
+            </Grid>
+          </Grid>
+        }
+      </>
     );
   }
 }

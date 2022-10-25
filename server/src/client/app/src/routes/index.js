@@ -1,18 +1,12 @@
 import React from "react";
 
-import async from "../components/Async";
 import styled from "styled-components";
+import async from "../components/Async";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  blue,
-  yellow,
-  orange,
-  red,
-  green,
-  grey,
-  purple,
-  pink
+  blue, green,
+  grey, orange, pink, purple, red, yellow
 } from "@mui/material/colors";
 
 // Cover components
@@ -92,7 +86,8 @@ const dataRoutes = {
   header: "Search",
   icon: <GreenMenuIcon icon="database" fixedWidth />,
   component: SearchPanel,
-  entity_type: "data"
+  entity_type: "data",
+  authRequired: true
 };
 
 const taskRoutes = {
@@ -100,7 +95,8 @@ const taskRoutes = {
   path: "/search",
   icon: <YellowMenuIcon icon={["fas", "flag"]} fixedWidth />,
   component: SearchPanel,
-  entity_type: "task"
+  entity_type: "task",
+  authRequired: true
 };
 
 const flowRoutes = {
@@ -108,7 +104,8 @@ const flowRoutes = {
   path: "/search",
   icon: <BlueMenuIcon icon="cog" fixedWidth />,
   component: SearchPanel,
-  entity_type: "flow"
+  entity_type: "flow",
+  authRequired: true
 };
 
 const runRoutes = {
@@ -116,7 +113,8 @@ const runRoutes = {
   path: "/search",
   icon: <RedMenuIcon icon="flask" fixedWidth />,
   component: SearchPanel,
-  entity_type: "run"
+  entity_type: "run",
+  authRequired: true
 };
 
 const studyRoutes = {
@@ -139,7 +137,8 @@ const studyRoutes = {
       component: SearchPanel,
       subtype: "run"
     }
-  ]
+  ],
+  authRequired: true
 };
 
 const benchmarkRoutes = {
@@ -162,7 +161,8 @@ const benchmarkRoutes = {
       component: SearchPanel,
       subtype: "run"
     }
-  ]
+  ],
+  authRequired: true
 };
 
 const taskTypeRoutes = {
@@ -170,7 +170,8 @@ const taskTypeRoutes = {
   path: "/search",
   icon: <OrangeMenuIcon icon={["far", "flag"]} fixedWidth />,
   component: SearchPanel,
-  entity_type: "task_type"
+  entity_type: "task_type",
+  authRequired: true
 };
 
 //const peopleRoutes = {
@@ -241,7 +242,8 @@ const measureRoutes = {
       component: SearchPanel,
       subtype: "estimation_procedure"
     }
-  ]
+  ],
+  authRequired: true
 };
 
 const authRoutes = {

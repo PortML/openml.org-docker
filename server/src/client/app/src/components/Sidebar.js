@@ -1,8 +1,8 @@
-import React from "react";
-import styled from "styled-components";
 import Icon from "@mui/material/Icon";
 import Tooltip from "@mui/material/Tooltip";
 import axios from "axios";
+import React from "react";
+import styled from "styled-components";
 
 import { NavLink as RouterNavLink, withRouter } from "react-router-dom";
 
@@ -14,16 +14,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
   Box,
-  Button,
-  Grid,
-  Chip,
-  Collapse,
-  Link as MuiLink,
-  ListItem,
-  ListItemText,
-  Drawer as MuiDrawer,
-  List as MuiList,
-  Typography
+  Button, Chip,
+  Collapse, Drawer as MuiDrawer, Grid, Link as MuiLink, List as MuiList, ListItem,
+  ListItemText, Typography
 } from "@mui/material";
 
 import routes from "../routes/index";
@@ -234,6 +227,8 @@ class Sidebar extends React.Component {
     counts: {}
   };
 
+  static contextType = MainContext
+
   toggle = index => {
     // Collapse all elements
     Object.keys(this.state).forEach(
@@ -260,7 +255,8 @@ class Sidebar extends React.Component {
       const isHome = route.containsHome && pathName === "/" ? true : false;
 
       this.setState(() => ({
-        [index]: isActive || isOpen || isHome
+        [index]: isActive || isOpen || isHome,
+        retried: false
       }));
     });
 
@@ -268,7 +264,7 @@ class Sidebar extends React.Component {
     this.countUpdate();
     this.intervalID = setInterval(() => {
       this.countUpdate();
-    }, 60000);
+    }, 60000); //60000);
   }
 
   // Abbreviate counts
@@ -292,6 +288,13 @@ class Sidebar extends React.Component {
 
   countUpdate = async () => {
     const ELASTICSEARCH_SERVER = process.env.REACT_APP_ES_URL || "https://www.openml.org/es/";
+    // if (this.props.loggedIn !== true) {
+    //   return
+    // }
+
+    // this.setState({
+    //   retried: false
+    // })
 
     const data = {
       size: 0,
@@ -307,7 +310,10 @@ class Sidebar extends React.Component {
     const headers = {
       Accept: "application/json",
       "Content-Type": "application/json",
-      cancelToken: this.axiosCancelToken.token
+      cancelToken: this.axiosCancelToken.token,
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token")
+      }
     };
 
     axios
@@ -384,7 +390,12 @@ class Sidebar extends React.Component {
               {/* Loop over all categories */}
               <List disablePadding>
                 <Items>
-                  {routes.map((category, index) => (
+                  {routes.filter(category => {
+                    if (process.env.REACT_APP_AUTHNETICATION_REQUIRED === 'false') return true
+                    if (category.authRequired === undefined || category.authRequired === null || category.authRequired === false) return true
+                    if (context.loggedIn === true) return true
+                    return false
+                  }).map((category, index) => (
                     <React.Fragment key={index}>
                       {category.header && !context.miniDrawer ? (
                         <SidebarSection variant="caption">

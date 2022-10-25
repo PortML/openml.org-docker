@@ -5,3 +5,4 @@ REACT_APP_SERVER_URL=http://localhost:5000/
 REACT_APP_OLD_SERVER_URL=http://localhost/
 # Elastic Search URL
 REACT_APP_ES_URL=http://localhost:9200/
+REACT_APP_php_URL=http://localhost/

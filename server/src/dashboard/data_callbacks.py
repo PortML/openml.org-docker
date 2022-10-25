@@ -5,16 +5,15 @@ import dash_html_components as html
 import numpy as np
 import pandas as pd
 import plotly.express as px
-
-# from plotly.subplots import make_subplots
-
 import plotly.graph_objs as go
-
 from dash.dependencies import Input, Output, State
+from flask import request
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
 from .dash_config import DASH_CACHING
-from .helpers import clean_dataset, get_data_metadata, logger, bin_numeric
+from .helpers import bin_numeric, clean_dataset, get_data_metadata, logger
+
+# from plotly.subplots import make_subplots
 
 
 TIMEOUT = 60 * 60 if DASH_CACHING else 1
@@ -39,7 +38,8 @@ def register_data_callbacks(app, cache):
         existing_columns.append({"id": "Entropy", "name": "Entropy"})
         logger.debug("Downloading data and calculate entropy")
         data_id = int(re.search(r"data/(\d+)", url).group(1))
-        df, meta_features, numerical_data, nominal_data = get_data_metadata(data_id)
+        df, meta_features, numerical_data, nominal_data = get_data_metadata(
+            data_id)
         scatter_div = (
             [
                 html.Div(
@@ -91,7 +91,8 @@ def register_data_callbacks(app, cache):
             if len(numerical_data) > 1 and nominal_data
             else html.Div(
                 id="Scatter Plot",
-                children=[html.Div(html.P("No numerical-nominal combination found"))],
+                children=[
+                    html.Div(html.P("No numerical-nominal combination found"))],
             )
         )
 
@@ -166,7 +167,9 @@ def register_data_callbacks(app, cache):
             return []
 
         logger.debug("loading pickle to create dist plot")
-
+        print("Request: ")
+        print(request)
+        print("End request.")
         # If pickle file is present
         data_id = int(re.search(r"data/(\d+)", url).group(1))
         try:
@@ -199,7 +202,8 @@ def register_data_callbacks(app, cache):
 
         out = html.Div(
             className="metric-rows",
-            style={"overflowY": "scroll", "height": "500px", "marginBottom": "50px"},
+            style={"overflowY": "scroll",
+                   "height": "500px", "marginBottom": "50px"},
             children=children,
         )
         logger.debug("distribution plot created")
@@ -229,7 +233,8 @@ def register_data_callbacks(app, cache):
             target_attribute = meta_data[meta_data["Target"] == "true"][
                 "Attribute"
             ].values[0]
-            target_type = meta_data[meta_data["Target"] == "true"]["DataType"].values[0]
+            target_type = meta_data[meta_data["Target"]
+                                    == "true"]["DataType"].values[0]
         except IndexError:
             return "No target found", "No target found"
 
@@ -256,7 +261,8 @@ def register_data_callbacks(app, cache):
             rf.feature_importances_, index=x.columns, columns=["importance"]
         )
         fi = fi.sort_values("importance", ascending=False).reset_index()
-        trace = go.Bar(y=fi["index"], x=fi["importance"], name="fi", orientation="h")
+        trace = go.Bar(y=fi["index"], x=fi["importance"],
+                       name="fi", orientation="h")
         layout = go.Layout(
             autosize=False, margin={"l": 100, "t": 0}, height=500, hovermode="closest"
         )
@@ -268,7 +274,8 @@ def register_data_callbacks(app, cache):
 
     @app.callback(
         Output("matrix", "children"),
-        [Input("radio", "value"), Input("url", "pathname"), Input("hidden", "value")],
+        [Input("radio", "value"), Input(
+            "url", "pathname"), Input("hidden", "value")],
         [State("datatable", "data")],
     )
     @cache.memoize(timeout=TIMEOUT)
@@ -286,7 +293,8 @@ def register_data_callbacks(app, cache):
             target_attribute = meta_data[meta_data["Target"] == "true"][
                 "Attribute"
             ].values[0]
-            target_type = meta_data[meta_data["Target"] == "true"]["DataType"].values[0]
+            target_type = meta_data[meta_data["Target"]
+                                    == "true"]["DataType"].values[0]
         except IndexError:
             return "No target found", "No target found"
 
@@ -330,7 +338,8 @@ def register_data_callbacks(app, cache):
             top_features["target"] = df["target"]
 
             if len(top_numericals):
-                px_mat = px.scatter_matrix(top_features, color="target", height=800)
+                px_mat = px.scatter_matrix(
+                    top_features, color="target", height=800)
                 # C = ['rgb(166,206,227)', 'rgb(31,120,180)', 'rgb(178,223,138)',
                 # 'rgb(51,160,44)', 'rgb(251,154,153)', 'rgb(227,26,28)']
                 # N = len(df['target'].unique())
@@ -385,7 +394,8 @@ def register_data_callbacks(app, cache):
                 parcats = [
                     go.Parcats(
                         dimensions=[
-                            {"label": column, "values": list(df_nom[column].values)}
+                            {"label": column, "values": list(
+                                df_nom[column].values)}
                             for column in df_nom.columns
                         ],
                         line={
@@ -440,7 +450,8 @@ def register_data_callbacks(app, cache):
                     x=df[df[colorCode] == col][at1],
                     y=df[df[colorCode] == col][at2],
                     mode="markers",
-                    marker={"size": 15, "line": {"width": 0.5, "color": "white"}},
+                    marker={"size": 15, "line": {
+                        "width": 0.5, "color": "white"}},
                     name=str(col),
                 )
                 for col in set(df[colorCode])
@@ -485,8 +496,10 @@ def dist_plot(meta_data, attribute, type, radio_value, data_id, show_legend, df)
 
     # Extract target name and type
     try:
-        target = meta_data[meta_data["Target"] == "true"]["Attribute"].values[0]
-        target_type = meta_data[meta_data["Target"] == "true"]["DataType"].values[0]
+        target = meta_data[meta_data["Target"]
+                           == "true"]["Attribute"].values[0]
+        target_type = meta_data[meta_data["Target"]
+                                == "true"]["DataType"].values[0]
     except IndexError:
         radio_value = "solo"
 
@@ -505,7 +518,8 @@ def dist_plot(meta_data, attribute, type, radio_value, data_id, show_legend, df)
         if radio_value == "target":
             target_vals = list(df["target"].unique())
             N = len(df["target"].unique())
-            color = ["hsl(" + str(h) + ",80%" + ",50%)" for h in np.linspace(0, 330, N)]
+            color = ["hsl(" + str(h) + ",80%" +
+                     ",50%)" for h in np.linspace(0, 330, N)]
             data = [
                 go.Histogram(
                     x=df[attribute][df["target"] == target_vals[i]],
@@ -549,7 +563,8 @@ def dist_plot(meta_data, attribute, type, radio_value, data_id, show_legend, df)
         if radio_value == "target":
             target_vals = list(df["target"].unique())
             N = len(df["target"].unique())
-            color = ["hsl(" + str(h) + ",80%" + ",50%)" for h in np.linspace(0, 330, N)]
+            color = ["hsl(" + str(h) + ",80%" +
+                     ",50%)" for h in np.linspace(0, 330, N)]
             data = [
                 go.Histogram(
                     x=(df[attribute][df["target"] == target_vals[i]]),
@@ -568,5 +583,6 @@ def dist_plot(meta_data, attribute, type, radio_value, data_id, show_legend, df)
             ]
 
         else:
-            data = [go.Histogram(x=(df[attribute]), name=attribute, showlegend=False)]
+            data = [go.Histogram(
+                x=(df[attribute]), name=attribute, showlegend=False)]
     return data

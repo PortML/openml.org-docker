@@ -1,28 +1,19 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-    Button,
-    Paper,
-    FormControl as MuiFormControl,
+    Alert, Box, Button, Card, FormControl as MuiFormControl,
     Grid,
     Input,
-    InputLabel,
-    TextField,
-    Typography,
-    Tooltip,
-    Box,
-    Tab,
-    Tabs,
-    Card,
-    Link
+    InputLabel, Link, Paper, Tab,
+    Tabs, TextField, Tooltip, Typography
 } from "@mui/material";
-import { Alert } from '@mui/material';
-import { spacing } from "@mui/system";
-import { Redirect } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { green } from "@mui/material/colors";
+import { spacing } from "@mui/system";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
+import { Redirect } from "react-router-dom";
+import styled from "styled-components";
+import { MainContext } from "../../App";
 
 const FloatIcon = styled(FontAwesomeIcon)({
     cursor: "pointer",
@@ -42,6 +33,8 @@ const Wrapper = styled(Paper)`
 `;
 
 function DataEdit() {
+    const { loggedIn } = useContext(MainContext)
+
     const [description, setDescription] = useState("");
     const [name, setName] = useState("");
     const [creator, setCreator] = useState("");
@@ -171,127 +164,129 @@ function DataEdit() {
 
     return (
         <Grid container spacing={3} justifyContent="center">
-            <Grid item md={7} xs={10}>
-                <Wrapper>
-                    <form onSubmit={datatoflask}>
-                        <Typography variant="h1" gutterBottom>
-                            {"Edit " + name}
-                        </Typography>
-                        {error && (
-                            <Alert severity="error">{errormessage}</Alert>
-                        )}
-                        <Grid container spacing={10}>
-                            <Grid item xs={12}>
-                                <Tabs
-                                    value={tabValue}
-                                    onChange={handleTabChange}
-                                    indicatorColor="primary"
-                                    textColor="primary"
-                                >
-                                    <Tab
-                                        label="Description"
-                                        key="markdown"
-                                    />
-                                    <Tab
-                                        label="Preview"
-                                        key="preview"
-                                    />
-                                </Tabs>
-                                {tabValue === 0 ? (
-                                    <FormControl fullWidth>
-                                        <TextField
-                                            onChange={handleChange}
-                                            variant="outlined"
-                                            label=""
-                                            id="description"
-                                            rows={15}
-                                            multiline={true}
-                                            value={description}
+            {(process.env.REACT_APP_AUTHNETICATION_REQUIRED !== 'true' || loggedIn === true) &&
+                <Grid item md={7} xs={10}>
+                    <Wrapper>
+
+                        <form onSubmit={datatoflask}>
+                            <Typography variant="h1" gutterBottom>
+                                {"Edit " + name}
+                            </Typography>
+                            {error && (
+                                <Alert severity="error">{errormessage}</Alert>
+                            )}
+                            <Grid container spacing={10}>
+                                <Grid item xs={12}>
+                                    <Tabs
+                                        value={tabValue}
+                                        onChange={handleTabChange}
+                                        indicatorColor="primary"
+                                        textColor="primary"
+                                    >
+                                        <Tab
+                                            label="Description"
+                                            key="markdown"
                                         />
-                                    </FormControl>) : (
+                                        <Tab
+                                            label="Preview"
+                                            key="preview"
+                                        />
+                                    </Tabs>
+                                    {tabValue === 0 ? (
+                                        <FormControl fullWidth>
+                                            <TextField
+                                                onChange={handleChange}
+                                                variant="outlined"
+                                                label=""
+                                                id="description"
+                                                rows={15}
+                                                multiline={true}
+                                                value={description}
+                                            />
+                                        </FormControl>) : (
                                         <Card variant="outlined">
                                             <ReactMarkdown children={description} />
                                         </Card>)}
-                                <div style={{ float: "right" }}>
-                                    <Tooltip title="Styling with Markdown is supported" placement="left">
-                                        <Link target="_blank" rel="noopener" color="inherit" href="https://guides.github.com/features/mastering-markdown/">
-                                            <FloatIcon icon={["fab", "markdown"]} size="lg" />
-                                        </Link>
-                                    </Tooltip>
-                                </div>
-                                <FormControl fullWidth mb={3}>
-                                    <InputLabel htmlFor="citation">Citation</InputLabel>
-                                    <Input id="citation" placeholder="citation" defaultValue={citation}
-                                        multiline={true} />
-                                </FormControl>
-                                <FormControl fullWidth mb={3}>
-                                    <TextField label="Creator" id="creator" maxRows={4} defaultValue={creator}
-                                        multiline={true} />
-                                </FormControl>
-                                <FormControl fullWidth mb={3}>
-                                    <InputLabel htmlFor="Collection Date">
-                                        Collection date
-                                    </InputLabel>
-                                    <Input id="collection_date" placeholder="Collection date" defaultValue={date}
-                                        multiline={true} />
-                                </FormControl>
-                                <FormControl fullWidth mb={3}>
-                                    <InputLabel htmlFor="language">Language</InputLabel>
-                                    <Input id="language" placeholder="Language" defaultValue={language}
-                                        multiline={true} />
-                                </FormControl>
-                                <FormControl fullWidth mb={3}>
-                                    <InputLabel htmlFor="original_data_url">
-                                        Original data URL
-                                    </InputLabel>
-                                    <Input id="original_data_url" placeholder="original_data_url"
-                                        defaultValue={original_data_url} multiline={true} />
-                                </FormControl>
-                                <FormControl fullWidth mb={3}>
-                                    <InputLabel htmlFor="paper_url">
-                                        Paper Url
-                                    </InputLabel>
-                                    <Input id="paper_url" placeholder="paper_url"
-                                        defaultValue={paper_url} multiline={true} />
-                                </FormControl>
-                                {owner && (
-                                    <Box p={1} border="3px solid red" borderRadius="5px" padding={5} marginTop={10}
-                                        marginBottom={10}>
-                                        <b>Danger Zone (can only be edited by author)</b>
-                                        <FormControl fullWidth mb={3}>
-                                            <InputLabel
-                                                htmlFor="default_target_attribute">default_target_attribute</InputLabel>
-                                            <Input id="default_target_attribute" placeholder="default_target_attribute"
-                                                defaultValue={def_tar_att} multiline={true} />
-                                        </FormControl>
-                                        <FormControl fullWidth mb={3}>
-                                            <InputLabel htmlFor="ignore_attribute">ignore_attribute</InputLabel>
-                                            <Input id="ignore_attribute" placeholder="ignore_attribute"
-                                                defaultValue={ignore_att} multiline={true} />
-                                        </FormControl>
-                                        <FormControl fullWidth mb={3}>
-                                            <InputLabel htmlFor="row_id_attribute">
-                                                row_id_attribute
-                                            </InputLabel>
-                                            <Input id="row_id_attribute" placeholder="row_id_attribute"
-                                                defaultValue={row_id_att} multiline={true} />
-                                        </FormControl>
+                                    <div style={{ float: "right" }}>
+                                        <Tooltip title="Styling with Markdown is supported" placement="left">
+                                            <Link target="_blank" rel="noopener" color="inherit" href="https://guides.github.com/features/mastering-markdown/">
+                                                <FloatIcon icon={["fab", "markdown"]} size="lg" />
+                                            </Link>
+                                        </Tooltip>
+                                    </div>
+                                    <FormControl fullWidth mb={3}>
+                                        <InputLabel htmlFor="citation">Citation</InputLabel>
+                                        <Input id="citation" placeholder="citation" defaultValue={citation}
+                                            multiline={true} />
+                                    </FormControl>
+                                    <FormControl fullWidth mb={3}>
+                                        <TextField label="Creator" id="creator" maxRows={4} defaultValue={creator}
+                                            multiline={true} />
+                                    </FormControl>
+                                    <FormControl fullWidth mb={3}>
+                                        <InputLabel htmlFor="Collection Date">
+                                            Collection date
+                                        </InputLabel>
+                                        <Input id="collection_date" placeholder="Collection date" defaultValue={date}
+                                            multiline={true} />
+                                    </FormControl>
+                                    <FormControl fullWidth mb={3}>
+                                        <InputLabel htmlFor="language">Language</InputLabel>
+                                        <Input id="language" placeholder="Language" defaultValue={language}
+                                            multiline={true} />
+                                    </FormControl>
+                                    <FormControl fullWidth mb={3}>
+                                        <InputLabel htmlFor="original_data_url">
+                                            Original data URL
+                                        </InputLabel>
+                                        <Input id="original_data_url" placeholder="original_data_url"
+                                            defaultValue={original_data_url} multiline={true} />
+                                    </FormControl>
+                                    <FormControl fullWidth mb={3}>
+                                        <InputLabel htmlFor="paper_url">
+                                            Paper Url
+                                        </InputLabel>
+                                        <Input id="paper_url" placeholder="paper_url"
+                                            defaultValue={paper_url} multiline={true} />
+                                    </FormControl>
+                                    {owner && (
+                                        <Box p={1} border="3px solid red" borderRadius="5px" padding={5} marginTop={10}
+                                            marginBottom={10}>
+                                            <b>Danger Zone (can only be edited by author)</b>
+                                            <FormControl fullWidth mb={3}>
+                                                <InputLabel
+                                                    htmlFor="default_target_attribute">default_target_attribute</InputLabel>
+                                                <Input id="default_target_attribute" placeholder="default_target_attribute"
+                                                    defaultValue={def_tar_att} multiline={true} />
+                                            </FormControl>
+                                            <FormControl fullWidth mb={3}>
+                                                <InputLabel htmlFor="ignore_attribute">ignore_attribute</InputLabel>
+                                                <Input id="ignore_attribute" placeholder="ignore_attribute"
+                                                    defaultValue={ignore_att} multiline={true} />
+                                            </FormControl>
+                                            <FormControl fullWidth mb={3}>
+                                                <InputLabel htmlFor="row_id_attribute">
+                                                    row_id_attribute
+                                                </InputLabel>
+                                                <Input id="row_id_attribute" placeholder="row_id_attribute"
+                                                    defaultValue={row_id_att} multiline={true} />
+                                            </FormControl>
 
 
-                                    </Box>
-                                )}
+                                        </Box>
+                                    )}
 
+                                </Grid>
                             </Grid>
-                        </Grid>
 
-                        <Button variant="contained" color="primary" type="Submit">
-                            Edit Dataset
-                        </Button>
+                            <Button variant="contained" color="primary" type="Submit">
+                                Edit Dataset
+                            </Button>
 
-                        {success && <Redirect to="/" />}
-                    </form>
-                </Wrapper>
-            </Grid>
+                            {success && <Redirect to="/" />}
+                        </form>
+                    </Wrapper>
+                </Grid>}
         </Grid >
     );
 }

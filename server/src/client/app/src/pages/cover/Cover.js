@@ -1,42 +1,30 @@
-import React from "react";
-import styled from "styled-components";
-import { spacing } from "@mui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { green, red, blue, amber, purple } from "@mui/material/colors";
+import { amber, blue, green, purple, red } from "@mui/material/colors";
+import { spacing } from "@mui/system";
+import React from "react";
+import { Link } from "react-router-dom";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { coy } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { Link } from "react-router-dom";
+import styled from "styled-components";
 
-import { Icon } from "@iconify/react";
-import tensorflowIcon from "@iconify/icons-logos/tensorflow";
-import pythonIcon from "@iconify/icons-logos/python";
-import rLang from "@iconify/icons-logos/r-lang";
-import javaIcon from "@iconify/icons-logos/java";
 import cSharp from "@iconify/icons-logos/c-sharp";
-import pytorchIcon from "@iconify/icons-logos/pytorch";
+import javaIcon from "@iconify/icons-logos/java";
 import jupyterIcon from "@iconify/icons-logos/jupyter";
+import pythonIcon from "@iconify/icons-logos/python";
+import pytorchIcon from "@iconify/icons-logos/pytorch";
+import rLang from "@iconify/icons-logos/r-lang";
+import tensorflowIcon from "@iconify/icons-logos/tensorflow";
+import { Icon } from "@iconify/react";
 
 import {
-  Grid,
-  Card,
-  CardContent as MuiCardContent,
-  Typography,
-  ListItem,
+  Button, Card, CardActionArea,
+  CardActions, CardContent as MuiCardContent, CardMedia, Container,
+  FormControl, Grid, InputBase, Link as MuiLink, ListItem,
   ListItemIcon,
-  ListItemText as MuiListItemText,
-  Container,
-  FormControl,
-  InputBase,
-  MenuItem,
-  Select,
-  Button,
-  Link as MuiLink,
-  CardMedia,
-  CardActionArea,
-  CardActions
+  ListItemText as MuiListItemText, MenuItem,
+  Select, Typography
 } from "@mui/material";
 import { MainContext } from "../../App.js";
-import { ContactChipFull } from "../docs/GetInvolved.js";
 
 const ListItemText = styled(MuiListItemText)`
   .MuiTypography-root {
@@ -663,44 +651,48 @@ class Cover extends React.Component {
               <Grid item xs={12} md={5}>
                 <IntroGraph />
               </Grid>
-              <Grid item xs={12} style={{ marginTop: 20 }}>
-                <FormControl style={{ display: "inline" }}>
-                  <CoverInput
-                    placeholder="Search PortML"
-                    onKeyPress={event => {
-                      if (event.key === 'Enter') {
-                        event.preventDefault();
-                        context.setQuery(event.target.value);
-                      }
-                    }}
-                  />
-                </FormControl>
-                <FormControl>
-                  <Select
-                    id="type-select"
-                    value={context.type ? context.type : "data"}
-                    input={<CustomInput />}
-                    onChange={event => {
-                      context.setType(event.target.value);
-                    }}
-                    style={{ fontSize: "1.2em", paddingBottom: 2 }}
-                  >
-                    <MenuItem value={"data"}>Datasets</MenuItem>
-                    <MenuItem value={"task"}>Tasks</MenuItem>
-                    <MenuItem value={"flow"}>Flows</MenuItem>
-                    <MenuItem value={"run"}>Runs</MenuItem>
-                  </Select>
-                </FormControl>
-                <div style={{ marginTop: 10 }}>
-                  <StyledLink to="/auth/sign-up">
-                    <WhiteButton variant="outlined">Sign Up</WhiteButton>
-                  </StyledLink>
-                  <WhiteText>
-                    to start tracking and sharing your own work.
-                  </WhiteText>
-                  {/* <WhiteText>OpenML is open and free to use.</WhiteText> */}
-                </div>
-              </Grid>
+              {(process.env.REACT_APP_AUTHNETICATION_REQUIRED !== 'true' || context.loggedIn === true) ?
+                <Grid item xs={12} style={{ marginTop: 20 }}>
+                  <FormControl style={{ display: "inline" }}>
+                    <CoverInput
+                      placeholder="Search PortML"
+                      onKeyPress={event => {
+                        if (event.key === 'Enter') {
+                          event.preventDefault();
+                          context.setQuery(event.target.value);
+                        }
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <Select
+                      id="type-select"
+                      value={context.type ? context.type : "data"}
+                      input={<CustomInput />}
+                      onChange={event => {
+                        context.setType(event.target.value);
+                      }}
+                      style={{ fontSize: "1.2em", paddingBottom: 2 }}
+                    >
+                      <MenuItem value={"data"}>Datasets</MenuItem>
+                      <MenuItem value={"task"}>Tasks</MenuItem>
+                      <MenuItem value={"flow"}>Flows</MenuItem>
+                      <MenuItem value={"run"}>Runs</MenuItem>
+                    </Select>
+                  </FormControl>
+                  <div style={{ marginTop: 10 }}>
+                    <StyledLink to="/auth/sign-up">
+                      <WhiteButton variant="outlined">Sign Up</WhiteButton>
+                    </StyledLink>
+                    <WhiteText>
+                      to start tracking and sharing your own work.
+                    </WhiteText>
+                    {/* <WhiteText>OpenML is open and free to use.</WhiteText> */}
+                  </div>
+                </Grid>
+                :
+                <Grid item xs={12} style={{ marginTop: 20, height: 120 }} />
+              }
             </Grid>
 
             <Grid

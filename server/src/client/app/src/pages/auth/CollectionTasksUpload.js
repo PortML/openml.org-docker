@@ -1,19 +1,17 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import axios from "axios";
 import {
   Button,
   FormControl as MuiFormControl,
-  Grid,
-  Paper,
-  Input,
-  InputLabel,
-  TextField,
+  Grid, Input,
+  InputLabel, Paper, TextField,
   Typography
 } from "@mui/material";
+import axios from "axios";
+import React, { useContext, useState } from "react";
+import styled from "styled-components";
 
 import { spacing } from "@mui/system";
 import { Redirect } from "react-router-dom";
+import { MainContext } from "../../App";
 
 const Wrapper = styled(Paper)`
   padding: ${props => props.theme.spacing(6)};
@@ -52,13 +50,13 @@ function Public() {
         },
         yourConfig
       )
-      .then(function(response) {
+      .then(function (response) {
         if (response.data.msg === "collection uploaded") {
           setSuccess(true);
         }
         console.log(response.data);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         setError(true);
         setErrorMessage("Could not upload collection");
         console.log(error.data);
@@ -71,10 +69,10 @@ function Public() {
     <form onSubmit={datatoflask}>
       <Typography variant="h1" gutterBottom>
         Create Task Collection
-      </Typography>          
-        <Button color="primary" href="/auth/upload-collection-runs">
-          Want to create a run collection instead?
-        </Button>
+      </Typography>
+      <Button color="primary" href="/auth/upload-collection-runs">
+        Want to create a run collection instead?
+      </Button>
       {error && (
         <Typography component="h3" variant="body1" align="center" color="red">
           {errormessage}
@@ -111,13 +109,17 @@ function Public() {
 }
 
 function Settings() {
+  const { loggedIn } = useContext(MainContext)
+
   return (
     <Grid container spacing={3} justifyContent="center">
       <Grid item md={7} xs={10}>
-        <Wrapper>
-          <Public />
-          {/*<Private />*/}
+        {(process.env.REACT_APP_AUTHNETICATION_REQUIRED !== 'true' || loggedIn === true) &&
+          <Wrapper>
+            <Public />
+            {/*<Private />*/}
           </Wrapper>
+        }
       </Grid>
     </Grid >
   );
