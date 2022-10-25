@@ -78,7 +78,9 @@ function Public() {
         setLname(response.data.last_name);
         setId(response.data.id);
         if (id !== false) {
-          fetch(`${ELASTICSEARCH_SERVER}user/user/` + id.toString())
+          fetch(`${ELASTICSEARCH_SERVER}user/user/` + id.toString(), {
+            headers: yourConfig.headers
+          })
             .then(response => response.json())
             .then(data => {
               setDataset(data._source.datasets_uploaded);

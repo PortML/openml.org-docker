@@ -2,20 +2,15 @@ import re
 
 import dash_html_components as html
 from dash.dependencies import Input, Output
+from flask import request
 
 from .data_callbacks import register_data_callbacks
 from .flow_callbacks import register_flow_callbacks
-from .layouts import (
-    get_layout_dataset_overview,
-    get_layout_from_data,
-    get_layout_from_flow,
-    get_layout_from_run,
-    get_layout_from_study,
-    get_layout_from_suite,
-    get_layout_from_task,
-    get_run_overview,
-    get_task_overview,
-)
+from .layouts import (get_layout_dataset_overview, get_layout_from_data,
+                      get_layout_from_flow, get_layout_from_run,
+                      get_layout_from_study, get_layout_from_suite,
+                      get_layout_from_task, get_run_overview,
+                      get_task_overview)
 from .overviews import get_flow_overview, register_overview_callbacks
 from .run_callbacks import register_run_callbacks
 from .study_callbacks import register_study_callbacks
@@ -45,7 +40,8 @@ def register_callbacks(app, cache):
 
 def register_layout_callback(app, cache):
     @app.callback(
-        [Output("page-content", "children"), Output("loading-indicator", "children")],
+        [Output("page-content", "children"),
+         Output("loading-indicator", "children")],
         [Input("url", "pathname")],
     )
     @cache.memoize(TIMEOUT)
@@ -56,6 +52,12 @@ def register_layout_callback(app, cache):
         :return: the dash layout and a dummy value for global loading spinner (None)
         """
         layout = html.Div([html.H1("Welcome to dash dashboard")])
+
+        # Authentication middleware here for checking secure connections using JWT or API
+        print("Pathname: ")
+        print(pathname)
+        print(request.url)
+
         if pathname is not None:
             number_flag = any(c.isdigit() for c in pathname)
             if "dashboard/data" in pathname:
@@ -86,11 +88,13 @@ def register_layout_callback(app, cache):
                     layout = get_run_overview()
 
             elif "dashboard/study/run" in pathname:
-                study_id = int(re.search(r"study/run/(\d+)", pathname).group(1))
+                study_id = int(
+                    re.search(r"study/run/(\d+)", pathname).group(1))
                 layout = get_layout_from_study(study_id)
 
             elif "dashboard/study/task" in pathname:
-                suite_id = int(re.search(r"study/task/(\d+)", pathname).group(1))
+                suite_id = int(
+                    re.search(r"study/task/(\d+)", pathname).group(1))
                 layout = get_layout_from_suite(suite_id)
 
         return layout, None

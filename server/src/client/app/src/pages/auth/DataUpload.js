@@ -1,32 +1,27 @@
-import React, { useState, useCallback } from "react";
-import styled from "styled-components";
-import axios from "axios";
 import {
-  Button,
-  Box,
-  Paper,
-  Chip,
-  Card,
-  FormControl as MuiFormControl,
+  Box, Button, Card, Chip, FormControl as MuiFormControl,
   Grid,
   Input,
-  InputLabel,
-  TextField,
+  InputLabel, Paper, TextField,
   Typography
 } from "@mui/material";
+import axios from "axios";
+import React, { useCallback, useContext, useState } from "react";
+import styled from "styled-components";
 
-import { spacing } from "@mui/system";
-import { Redirect } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { green } from "@mui/material/colors";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { green } from "@mui/material/colors";
-import { useDropzone } from 'react-dropzone'
+import Select from "@mui/material/Select";
+import { spacing } from "@mui/system";
+import { useDropzone } from 'react-dropzone';
+import { Redirect } from "react-router-dom";
+import { MainContext } from "../../App";
 
 const DropCard = styled(Card)`
   padding: ${props => props.theme.spacing(3)};
@@ -342,13 +337,17 @@ function Public() {
 }
 
 function Settings() {
+  const { loggedIn } = useContext(MainContext)
+
   return (
     <Grid container spacing={3} justifyContent="center">
       <Grid item md={7} xs={10}>
-        <Wrapper>
-          <Public />
-          {/*<Private />*/}
-        </Wrapper>
+        {(process.env.REACT_APP_AUTHNETICATION_REQUIRED !== 'true' || loggedIn === true) &&
+          <Wrapper>
+            <Public />
+            {/*<Private />*/}
+          </Wrapper>
+        }
       </Grid>
     </Grid >
   );

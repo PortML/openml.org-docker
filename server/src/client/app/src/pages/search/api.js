@@ -134,7 +134,8 @@ export function search(
     {
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token")
       },
       method: "POST",
       mode: "cors",
@@ -163,7 +164,8 @@ export function getItem(type, itemId) {
   return fetch(ELASTICSEARCH_SERVER + type + "/" + type + "/" + itemId, {
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token")
     },
     mode: "cors"
   })
@@ -186,7 +188,8 @@ export function getList(itemId) {
   return fetch(ELASTICSEARCH_SERVER + "data/data/list/tag/" + itemId, {
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token")
     },
     mode: "cors"
   })

@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
-import styled, { createGlobalStyle } from "styled-components";
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import React, { useEffect, useState } from "react";
+import styled, { createGlobalStyle } from "styled-components";
 
-import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
+import Sidebar from "../components/Sidebar";
 //import Footer from "../components/Footer";
 
-import { MainContext } from "../App.js";
-import { Redirect } from "react-router-dom";
 import { spacing } from "@mui/system";
+import { Redirect } from "react-router-dom";
+import { MainContext } from "../App.js";
 
 import {
   CssBaseline,
@@ -25,7 +25,7 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     background: ${props =>
-      window.location.pathname === "/" ? "#fff" : props.theme.body.background};
+    window.location.pathname === "/" ? "#fff" : props.theme.body.background};
   }
 `;
 
@@ -89,7 +89,7 @@ function Main(props) {
         setActiveSearch(false);
       }
     };
-  
+
     const updateDimensions = () => {
       if (mode !== "wide" && window.innerWidth > 960) {
         setMode("wide");
@@ -104,7 +104,7 @@ function Main(props) {
       window.removeEventListener('scroll', listenToScroll);
       window.removeEventListener('resize', updateDimensions);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const { children, routes, background } = props;
@@ -125,19 +125,23 @@ function Main(props) {
           <CssBaseline />
           <GlobalStyle />
           <Drawer drawerWidth={context.drawerWidth} open={false}>
-            {hidden ? null : 
+            {hidden ? null :
               <Sidebar
                 routes={routes}
                 PaperProps={{ style: { width: context.drawerWidth } }}
                 variant="temporary"
                 open={mobileOpen}
                 onClose={handleDrawerToggle}
+                loggedIn={context.loggedIn}
+                checkLogIn={context.checkLogIn}
               />
             }
             <Sidebar
               routes={routes}
               PaperProps={{ style: { width: context.drawerWidth } }}
               sx={{ display: { lg: 'block', xs: 'none' } }}
+              loggedIn={context.loggedIn}
+              checkLogIn={context.checkLogIn}
             />
           </Drawer>
           <AppContent>
@@ -147,7 +151,7 @@ function Main(props) {
               routes={routes}
               loggedIn={context.loggedIn}
             />
-            <MainContent p={{largeScreen} ? 10 : 8} bg={background}>
+            <MainContent p={{ largeScreen } ? 10 : 8} bg={background}>
               {children}
             </MainContent>
             {/*<Footer />*/}
