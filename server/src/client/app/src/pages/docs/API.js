@@ -467,7 +467,7 @@ function OpenMLSwaggerUI() {
         <ApiTab value="Julia" label="Julia" />
         <ApiTab value="Java" label="Java" />
         <ApiTab value="Others" label="Others" />
-        <ApiTab value="REST" label="REST" />
+        {/* <ApiTab value="REST" label="REST" /> */}
       </ApiTabs>
       </Box>
       <Grid 
