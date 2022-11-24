@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "OpenML API",
-        "description": "REST API for sharing, organizing and reusing machine learning datasets, code, and experiments. <ul><li> Follows a predictive URL scheme from endpoint <b>https://www.openml.org/api/v1/json</b> (or /xml). E.g. get info about dataset 40996 from <a href='https://www.openml.org/api/v1/json/data/40996'>https://www.openml.org/api/v1/json/data/40996</a>. </li><li> You need to add your API key (i.e., add <b>?api_key=abcde12345</b>) for POST and DELETE calls. The API key can be found in your profile on openml.org. </li><li> Hint: use a browser plugin to pretty-print JSON responses (e.g. for <a href='https://chrome.google.com/webstore/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa/related'>Chrome</a>, <a href='https://addons.mozilla.org/nl/firefox/addon/json-lite/'>Firefox</a>).</ul>",
+        "title": "REST API",
+        "description": "REST API for sharing, organizing and reusing machine learning datasets, code, and experiments. <ul><li> Follows a predictive URL scheme from endpoint <b>https://www.openml.org/api/v1/json</b> (or /xml). E.g. get info about dataset 40996 from <a href='https://www.openml.org/api/v1/json/data/40996'>https://www.openml.org/api/v1/json/data/40996</a>. </li><li> You need to add your API key (i.e., add <b>?api_key=abcde12345</b>) for POST and DELETE calls. The API key can be found in your profile on openml.org. </li><li> Hint: use a browser plugin to pretty-print JSON responses (e.g. for <a href='https://chrome.google.com/webstore/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa/related'>Chrome</a>, <a href='https://addons.mozilla.org/nl/firefox/addon/json-lite/'>Firefox</a>).</ul> <br><br> <b>Note:</b> using the REST API calls through this webpage it is only possible to connect to the OpenML servers. Compatibility with the PortML server is under construction. Meanwhile, you can still use these REST API calls in your own environment from the endpoint <b>http://demo.portml.com/secure/php/api/v1/xml/</b>.",
         "version": "1.0.0"
     },
     "servers": [
