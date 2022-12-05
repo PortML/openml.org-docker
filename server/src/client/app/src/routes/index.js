@@ -336,7 +336,7 @@ const apiRoutes = {
 
 const blogRoutes = {
   id: "Blog",
-  path: "http://blog.openml.org/",
+  path: "https://portml.com/blog/",
   icon: <YellowMenuIcon icon="rss" fixedWidth />,
   component: null
 };
@@ -386,9 +386,9 @@ export const mainRoutes = [
   profileRoutes,
   measureRoutes,
   // peopleRoutes,
-  // documentationRoutes,
-  // blogRoutes,
-  // apiRoutes,
+  documentationRoutes,
+  blogRoutes,
+  apiRoutes,
   // contributeRoutes,
   // meetRoutes,
   teamRoutes,
@@ -407,9 +407,9 @@ const defaultRoutes = [
   taskTypeRoutes,
   measureRoutes,
   // peopleRoutes,
-  // documentationRoutes,
-  // blogRoutes,
-  // apiRoutes,
+  documentationRoutes,
+  blogRoutes,
+  apiRoutes,
   // contributeRoutes,
   // meetRoutes,
   teamRoutes,

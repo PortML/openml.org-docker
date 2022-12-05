@@ -215,7 +215,7 @@ const docs = {
 }
 
 const colab_links = {
-  "Python" : "https://colab.research.google.com/drive/1z5FvwxCz4AMQ67Vzd-AsSd8g5uRxnYDf?usp=sharing",
+  "Python" : "https://colab.research.google.com/drive/102S6VsKO7SaCXpZ7604qVO0dKBP2ok8K?usp=sharing",
   "R" : "https://colab.research.google.com/drive/1d3etWoVg9DVGnDdlQIerB9E4tyY29gqZ?usp=sharing",
   "Julia" : "https://colab.research.google.com/drive/1IKO-U27WbV9H4kMiWWp0yxKtKpNiDZAd?usp=sharing"
 }
@@ -230,6 +230,18 @@ const codeExamples = {
   "Python" : {
     "Installation" : 
 `pip install openml`,
+
+    "Gain access to the secured PortML server":
+`import openml
+
+# Specify your organizations PortML server
+openml.config.server = "http://portml.com/ORGANIZATION/secure/php/api/v1/xml"
+
+# Supply your private API key
+openml.config.server = "API_KEY"
+
+# Change the cache directory to avoid conflicts with OpenML
+openml.config.cache_directory = "C:\\Users\\username\\.portml"`,  
 
     "Query and download data" : 
 `import openml
