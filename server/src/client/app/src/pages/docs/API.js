@@ -234,8 +234,8 @@ const codeExamples = {
     "Gain access to the secured PortML server":
 `import openml
 
-# Specify the PortML server
-openml.config.server = "http://demo.portml.com/"
+# Specify your organizations PortML server
+openml.config.server = "http://portml.com/ORGANIZATION/secure/php/api/v1/xml"
 
 # Supply your private API key
 openml.config.server = "API_KEY"
